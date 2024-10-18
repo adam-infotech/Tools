@@ -1,0 +1,64 @@
+version: '3.5'
+
+services:
+  node1:
+    build:
+      context: .
+      dockerfile: ubuntu/Dockerfile.ubuntu
+    image: utility/ubuntu:20241017
+    ports:
+      - 1221:22/tcp
+    networks:
+      - utility
+    container_name: node1
+    hostname: node1
+
+  node2:
+    build:
+      context: .
+      dockerfile: ubuntu/Dockerfile.ubuntu
+    image: utility/ubuntu:20241017
+    ports:
+      - 1222:22/tcp
+    networks:
+      - utility
+    container_name: node2
+    hostname: node1
+
+  node3:
+    build:
+      context: .
+      dockerfile: ubuntu/Dockerfile.ubuntu
+    image: utility/ubuntu:20241017
+    ports:
+      - 1223:22/tcp
+    networks:
+      - utility
+    container_name: node3
+    hostname: node3
+
+  terraform:
+    build:
+      context: .
+      dockerfile: ubuntu/Dockerfile.terraform
+    image: utility/terraform:20241017
+    ports:
+      - 1224:22/tcp
+      - 1281:8080/tcp      
+    networks:
+      - utility
+    container_name: terraform
+    hostname: terraform
+    volumes:
+      - ./project:/home/ansible/Project
+      - ./jenkins:/var/lib/jenkins
+
+networks:
+  utility:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.251.0/24"

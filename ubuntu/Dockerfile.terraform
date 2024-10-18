@@ -1,0 +1,42 @@
+FROM ubuntu:noble-20241011
+ENV DEBIAN_FRONTEND="noninteractive" 
+ADD ubuntu/config/ssh.tgz /root/
+ADD ubuntu/config/DIR_COLORS /etc/DIR_COLORS_ADAM
+ADD ubuntu/config/etc/skel/.bashrc /etc/skel/.bashrc
+ADD ubuntu/config/etc/ssh/sshd_config /etc/ssh/sshd_config
+ADD ubuntu/config/etc/ssh/sshd-banner /etc/ssh/sshd-banner
+COPY ubuntu/config/run_jenkins.sh /run_jenkins.sh
+
+RUN chown -R root:root /root/.ssh; chmod 600 /root/.ssh/* ; chmod +x /run_jenkins.sh ; \
+apt-get -y update ; apt-get -y  upgrade ; apt-get -y install --assume-yes apt-utils git ; \
+apt-get -y install openssh-server iproute2 vim sudo wget unzip curl iputils-ping; \
+apt install -yq tzdata ; ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime ; \
+dpkg-reconfigure -f noninteractive tzdata ; \
+groupadd -r automation; useradd -r -m -k /etc/skel/ -g automation -s /bin/bash ansible ; \
+sed -i "/^root/aansible ALL=(ALL) NOPASSWD: ALL" /etc/sudoers ; \
+curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - ; \
+apt -y install software-properties-common ; \
+apt-add-repository -y "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" ; \
+apt-get update ; apt-get install terraform ; \
+wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip ; \
+unzip awscli-exe-linux-x86_64.zip ; sudo ./aws/install ; \
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash ; \
+apt-get install -y apt-transport-https ca-certificates gnupg ; \
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list ; \
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - ; \
+apt-get -y update ; \ 
+apt-get install -y google-cloud-cli kubectl ; \
+apt-get install -y bash-completion ; apt-get -y install python3-pip ; apt -y install ansible ; \
+sudo -u root -i echo 'source <(kubectl completion bash)' >>~/.bashrc ; \
+kubectl completion bash >/etc/bash_completion.d/kubectl ; \
+rm -rf /awscli-exe-linux-x86_64.zip
+
+ADD ubuntu/config/ssh.tgz /home/ansible
+RUN chmod 600 /home/ansible/.ssh/authorized_keys ; chmod 600 /root/.ssh/authorized_keys ; chown -R ansible:automation /home/ansible/.ssh ; \
+sudo -u ansible -i echo 'source <(kubectl completion bash)' >>~/.bashrc ; \
+wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key ; \
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null ; \
+DEBIAN_FRONTEND="noninteractive" apt-get -y install fontconfig openjdk-11-jre ; apt-get -y update ; apt-get -y install jenkins
+
+EXPOSE 22/tcp 8080/tcp
+CMD ["/bin/bash","/run_jenkins.sh"]

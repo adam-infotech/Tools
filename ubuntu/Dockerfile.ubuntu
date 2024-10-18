@@ -1,0 +1,23 @@
+FROM ubuntu:noble-20241011
+ENV DEBIAN_FRONTEND="noninteractive"
+
+ADD ubuntu/config/ssh.tgz /root/
+ADD ubuntu/config/DIR_COLORS /etc/DIR_COLORS_ADAM
+ADD ubuntu/config/etc/skel/.bashrc /etc/skel/.bashrc
+ADD ubuntu/config/etc/ssh/sshd_config /etc/ssh/sshd_config
+ADD ubuntu/config/etc/ssh/sshd-banner /etc/ssh/sshd-banner
+COPY ubuntu/config/run.sh /run.sh
+
+RUN chown -R root:root /root/.ssh; chmod 600 /root/.ssh/* ; chmod +x /run.sh ; \
+apt-get -y update ; apt-get -y  upgrade ; apt-get -y install --assume-yes apt-utils ; apt-get -y install openssh-server iproute2 vim sudo git iputils-ping; \
+groupadd -r automation; useradd -r -m -k /etc/skel/ -g automation -s /bin/bash ansible ; \
+sed -i "/^root/aansible ALL=(ALL) NOPASSWD: ALL" /etc/sudoers ; \
+apt install -yq tzdata ; ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime ; \
+dpkg-reconfigure -f noninteractive tzdata
+
+ADD ubuntu/config/ssh.tgz /home/ansible
+RUN chmod 600 /home/ansible/.ssh/authorized_keys ; chmod 600 /root/.ssh/authorized_keys ; chown -R ansible:automation /home/ansible/.ssh
+
+
+EXPOSE 22/tcp
+CMD ["/bin/bash","/run.sh"]
