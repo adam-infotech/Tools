@@ -9,7 +9,7 @@ ADD ubuntu/config/etc/ssh/sshd-banner /etc/ssh/sshd-banner
 COPY ubuntu/config/run.sh /run.sh
 
 RUN chown -R root:root /root/.ssh; chmod 600 /root/.ssh/* ; chmod +x /run.sh ; \
-apt-get -y update ; apt-get -y  upgrade ; apt-get -y install --assume-yes apt-utils ; apt-get -y install openssh-server iproute2 vim sudo git iputils-ping; \
+apt-get -y update ; apt-get -y  upgrade ; apt-get -y install --assume-yes apt-utils ; apt-get -y install openssh-server iproute2 vim sudo git iputils-ping python3-pip ; \
 groupadd -r automation; useradd -r -m -k /etc/skel/ -g automation -s /bin/bash ansible ; \
 sed -i "/^root/aansible ALL=(ALL) NOPASSWD: ALL" /etc/sudoers ; \
 apt install -yq tzdata ; ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime ; \

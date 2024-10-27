@@ -1,4 +1,4 @@
-version: '3.8'
+name: lab
 services:
   node1:
     build:
@@ -51,6 +51,7 @@ services:
     volumes:
       - ./project:/home/ansible/Project
       - ./jenkins:/var/lib/jenkins
+      - ./ansible:/ansible
 
 networks:
   utility:

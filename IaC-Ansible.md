@@ -26,13 +26,17 @@
                 PS C:\Windows\system32>
                 ```
             - Install docker
-
-                [docker-desktop](https://www.docker.com/products/docker-desktop/)
+              - [docker-desktop](https://www.docker.com/products/docker-desktop/)
             - install VSCode
-
-                [VSCode](https://code.visualstudio.com/download)
+              - [VSCode](https://code.visualstudio.com/download)
+              - VScode Extensions
+                - Ansible
+                - YAML
     - Ansible inventory
         - In INI
+```bash
+
+```
         - In yaml
     - ansible adhoc command
     - Absible playbook

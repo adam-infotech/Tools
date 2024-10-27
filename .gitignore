@@ -1,3 +1,4 @@
 WorkSpace.code-workspace
-jenkins/*
-project/*
+jenkins
+project
+ansible
