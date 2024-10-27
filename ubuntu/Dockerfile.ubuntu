@@ -2,11 +2,11 @@ FROM --platform=$BUILDPLATFORM ubuntu:rolling
 ENV DEBIAN_FRONTEND="noninteractive"
 
 ADD ubuntu/config/ssh.tgz /root/
-ADD ubuntu/config/DIR_COLORS /etc/DIR_COLORS_ADAM
 ADD ubuntu/config/etc/skel/.bashrc /etc/skel/.bashrc
 ADD ubuntu/config/etc/ssh/sshd_config /etc/ssh/sshd_config
 ADD ubuntu/config/etc/ssh/sshd-banner /etc/ssh/sshd-banner
 COPY ubuntu/config/run.sh /run.sh
+COPY --chmod=755 ubuntu/config/DIR_COLORS /etc/DIR_COLORS_ADAM
 
 RUN chown -R root:root /root/.ssh; chmod 600 /root/.ssh/* ; chmod +x /run.sh ; \
 apt-get -y update ; apt-get -y  upgrade ; apt-get -y install --assume-yes apt-utils ; apt-get -y install openssh-server iproute2 vim sudo git iputils-ping python3-pip ; \

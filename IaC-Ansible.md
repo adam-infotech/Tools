@@ -34,10 +34,14 @@
                 - YAML
     - Ansible inventory
         - In INI
-```bash
-
-```
+            - Nomal mode
+            - Group inventory
         - In yaml
+            - Nomal mode
+            - Group inventory
     - ansible adhoc command
+      ```bash
+      $ ansible -i inventory/lab.ini node1 -m ping
+      ```
     - Absible playbook
     - absible role
