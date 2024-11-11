@@ -1,0 +1,9 @@
+# tasks file for roles/test
+- name: list CPU info
+  ansible.builtin.command: lscpu
+  args:
+    chdir: ~
+  register: myoutput
+- name: debug
+  ansible.builtin.debug:
+    var: myoutput

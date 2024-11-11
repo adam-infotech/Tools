@@ -1,0 +1,6 @@
+- hosts: all
+  become: yes
+  # pre_tasks:
+  roles:
+    - role: test01
+    - role: test02

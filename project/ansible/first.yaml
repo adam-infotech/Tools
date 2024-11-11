@@ -1,0 +1,13 @@
+- name: My first playbook
+  hosts: all
+  become: yes
+  # pre_tasks:
+  pre_tasks:
+    - name: list all installed packages on Ubuntu
+      ansible.builtin.command: apt list --installed
+      args:
+        chdir: ~
+      register: myoutput
+    - name: debug
+      ansible.builtin.debug:
+        var: myoutput
