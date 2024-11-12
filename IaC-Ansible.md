@@ -32,6 +32,18 @@
               - VScode Extensions
                 - Ansible
                 - YAML
+            - Enable Docker compose
+                ```bash
+                docker compose up -d
+                ```
+            - Enter terraform container
+                ```bash
+                docker compose exec -it terraform bash
+                ```
+            - Switch ansible env
+                ```bash
+                su - ansible
+                ```
     - Ansible inventory
         - In INI
             - Nomal mode
